@@ -37,15 +37,29 @@ export default function AdminDashboard() {
     fetchEventData();
   }, []);
 
-  const handleAction = async (endpoint: string) => {
+  const handleAction = async (endpoint: string, extraBody: Record<string, unknown> = {}) => {
     try {
-      const res = await fetch(`/api/admin/event/${endpoint}`, { method: 'POST' });
-      if (!res.ok) throw new Error(`Failed to ${endpoint}`);
+      const res = await fetch(`/api/admin/event/${endpoint}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ eventId: eventData?.id, ...extraBody }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || `Failed to ${endpoint}`);
+      }
       fetchEventData(); // refresh data
     } catch (err: any) {
       alert(err.message);
     }
   };
+
+  const handleStart = () => handleAction('start');
+  const handlePauseResume = () => {
+    const action = eventData?.status === 'PAUSED' ? 'resume' : 'pause';
+    handleAction('pause-resume', { action });
+  };
+  const handleEnd = () => handleAction('end');
 
   const handleLogout = async () => {
     await fetch('/api/admin/logout', { method: 'POST' });
@@ -78,14 +92,14 @@ export default function AdminDashboard() {
             <h2 className="cyber-text-red" style={{ marginTop: 0 }}>EVENT STATUS: <span style={{color:'#fff'}}>{eventData?.status ?? 'LOADING...'}</span></h2>
             <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
               <button 
-                onClick={() => handleAction('start')} 
+                onClick={handleStart} 
                 className="cyber-button" 
                 disabled={eventData?.status !== 'WAITING'}
               >
                 START EVENT
               </button>
               <button 
-                onClick={() => handleAction('pause-resume')} 
+                onClick={handlePauseResume} 
                 className="cyber-button"
                 disabled={eventData?.status === 'WAITING' || eventData?.status === 'COMPLETED'}
                 style={{ background: eventData?.status === 'ACTIVE' ? 'var(--red-dark)' : 'var(--red-primary)' }}
@@ -93,7 +107,7 @@ export default function AdminDashboard() {
                 {eventData?.status === 'PAUSED' ? 'RESUME EVENT' : 'PAUSE EVENT'}
               </button>
               <button 
-                onClick={() => handleAction('end')} 
+                onClick={handleEnd} 
                 className="cyber-button"
                 disabled={eventData?.status === 'COMPLETED'}
                 style={{ background: '#333', color: '#fff' }}
