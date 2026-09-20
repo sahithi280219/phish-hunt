@@ -1,14 +1,15 @@
 'use client';
 
-import { useState, Suspense } from 'react';
+import { useState, Suspense, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 
 function RegisterForm() {
   const searchParams = useSearchParams();
   const eventCode = searchParams.get('code') || '';
 
   const [teamName, setTeamName] = useState('');
-  const [members, setMembers] = useState(['']); // start with 1 member slot
+  const [members, setMembers] = useState(['']);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -18,7 +19,7 @@ function RegisterForm() {
   };
 
   const removeMember = (index: number) => {
-    if (members.length <= 1) return; // must have at least 1
+    if (members.length <= 1) return;
     setMembers(members.filter((_, i) => i !== index));
   };
 
@@ -40,7 +41,6 @@ function RegisterForm() {
       setError('Please enter at least one member name.');
       return;
     }
-    // Ensure all visible inputs are non-empty
     if (members.some((m) => !m.trim())) {
       setError('Please fill in all member fields or remove empty ones.');
       return;
@@ -77,9 +77,14 @@ function RegisterForm() {
     >
       {/* Team Name */}
       <div>
-        <label
-          style={{ display: 'block', marginBottom: '0.5rem', color: '#aaa', fontSize: '0.8rem', letterSpacing: '2px' }}
-        >
+        <label style={{
+          display: 'block',
+          marginBottom: '0.5rem',
+          color: '#666',
+          fontSize: '0.7rem',
+          letterSpacing: '3px',
+          fontFamily: 'var(--font-orbitron)',
+        }}>
           TEAM NAME
         </label>
         <input
@@ -95,28 +100,38 @@ function RegisterForm() {
 
       {/* Members */}
       <div>
-        <div
-          style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}
-        >
-          <label style={{ color: '#aaa', fontSize: '0.8rem', letterSpacing: '2px' }}>
-            TEAM MEMBERS ({members.length} added · min 1, max 4)
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '0.75rem',
+        }}>
+          <label style={{
+            color: '#666',
+            fontSize: '0.7rem',
+            letterSpacing: '3px',
+            fontFamily: 'var(--font-orbitron)',
+          }}>
+            MEMBERS ({members.length}/4)
           </label>
           {members.length < 4 && (
             <button
               type="button"
               onClick={addMember}
               style={{
-                background: 'transparent',
-                border: '1px solid var(--red-dark)',
+                background: 'rgba(255,0,51,0.08)',
+                border: '1px solid rgba(255,0,51,0.2)',
                 color: 'var(--red-primary)',
-                padding: '4px 12px',
-                borderRadius: '4px',
+                padding: '6px 14px',
+                borderRadius: '6px',
                 cursor: 'pointer',
-                fontSize: '0.8rem',
+                fontSize: '0.75rem',
                 letterSpacing: '1px',
+                fontFamily: 'var(--font-orbitron)',
+                transition: 'all 0.3s',
               }}
             >
-              + ADD MEMBER
+              + ADD
             </button>
           )}
         </div>
@@ -139,15 +154,17 @@ function RegisterForm() {
                   onClick={() => removeMember(i)}
                   title="Remove member"
                   style={{
-                    background: 'transparent',
-                    border: '1px solid #444',
-                    color: '#888',
-                    width: '36px',
-                    height: '36px',
-                    borderRadius: '4px',
+                    background: 'rgba(255,0,51,0.05)',
+                    border: '1px solid rgba(255,0,51,0.15)',
+                    color: '#666',
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: '8px',
                     cursor: 'pointer',
-                    fontSize: '1rem',
+                    fontSize: '1.1rem',
                     flexShrink: 0,
+                    transition: 'all 0.3s',
+                    fontFamily: 'var(--font-rajdhani)',
                   }}
                 >
                   ×
@@ -157,7 +174,13 @@ function RegisterForm() {
           ))}
         </div>
 
-        <p style={{ marginTop: '0.5rem', color: '#555', fontSize: '0.78rem' }}>
+        <p style={{
+          marginTop: '0.5rem',
+          color: '#444',
+          fontSize: '0.78rem',
+          fontFamily: 'var(--font-rajdhani)',
+          fontWeight: 500,
+        }}>
           Team size: 1–4 members allowed.
         </p>
       </div>
@@ -173,7 +196,7 @@ function RegisterForm() {
         type="submit"
         className="cyber-button"
         disabled={loading}
-        style={{ padding: '1rem', marginTop: '0.5rem' }}
+        style={{ padding: '16px', marginTop: '0.5rem', width: '100%' }}
       >
         {loading ? 'REGISTERING...' : 'REGISTER TEAM →'}
       </button>
@@ -182,37 +205,96 @@ function RegisterForm() {
 }
 
 export default function Register() {
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => { setLoaded(true); }, []);
+
   return (
     <main
-      className="container"
       style={{
         minHeight: '100vh',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: '2rem 0',
+        padding: '2rem',
+        position: 'relative',
       }}
     >
-      <div className="panel" style={{ width: '100%', maxWidth: '560px' }}>
+      {/* Background glow */}
+      <div style={{
+        position: 'fixed',
+        top: '40%',
+        left: '50%',
+        width: '600px',
+        height: '600px',
+        borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(255,0,51,0.05) 0%, transparent 70%)',
+        transform: 'translate(-50%, -50%)',
+        pointerEvents: 'none',
+        zIndex: 0,
+      }} />
+
+      <div
+        className="panel"
+        style={{
+          width: '100%',
+          maxWidth: '560px',
+          position: 'relative',
+          zIndex: 1,
+          opacity: loaded ? 1 : 0,
+          transform: loaded ? 'translateY(0)' : 'translateY(30px)',
+          transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
+        }}
+      >
         {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🛡️</div>
-          <h2 className="cyber-text-red" style={{ margin: 0 }}>
-            TEAM REGISTRATION
+        <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+          <div style={{
+            width: '64px',
+            height: '64px',
+            borderRadius: '16px',
+            background: 'linear-gradient(135deg, rgba(255,0,51,0.15), rgba(255,0,51,0.05))',
+            border: '1px solid rgba(255,0,51,0.2)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '1.6rem',
+            margin: '0 auto 1.2rem',
+          }}>
+            🛡️
+          </div>
+          <h2 style={{
+            fontFamily: 'var(--font-orbitron)',
+            fontSize: '1.3rem',
+            letterSpacing: '3px',
+            color: '#fff',
+            marginBottom: '0.4rem',
+          }}>
+            TEAM <span style={{ color: 'var(--red-primary)' }}>REGISTRATION</span>
           </h2>
-          <p style={{ color: '#888', fontSize: '0.85rem', marginTop: '0.4rem' }}>
+          <p style={{
+            color: '#555',
+            fontSize: '0.85rem',
+            fontFamily: 'var(--font-rajdhani)',
+            fontWeight: 500,
+          }}>
             Register your team to join the Phish Hunt
           </p>
         </div>
 
-        <Suspense fallback={<p style={{ textAlign: 'center' }}>Loading...</p>}>
+        <Suspense fallback={<p style={{ textAlign: 'center', color: '#555' }}>Loading...</p>}>
           <RegisterForm />
         </Suspense>
 
-        <div style={{ marginTop: '2rem', textAlign: 'center' }}>
-          <a href="/join" style={{ color: '#555', textDecoration: 'none', fontSize: '0.85rem' }}>
+        <div style={{ marginTop: '2.5rem', textAlign: 'center' }}>
+          <Link href="/join" style={{
+            color: '#444',
+            textDecoration: 'none',
+            fontSize: '0.8rem',
+            fontFamily: 'var(--font-rajdhani)',
+            fontWeight: 600,
+            letterSpacing: '1px',
+          }}>
             ← Back to Access
-          </a>
+          </Link>
         </div>
       </div>
     </main>

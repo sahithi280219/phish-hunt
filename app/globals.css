@@ -1,30 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap');
+
 :root {
   /* Color Palette - Cyber Red & Black */
-  --bg-darkest: #050505;
-  --bg-dark: #0B0B0B;
-  --bg-panel: rgba(11, 11, 11, 0.85);
+  --bg-darkest: #030303;
+  --bg-dark: #0a0a0a;
+  --bg-panel: rgba(12, 12, 12, 0.75);
   
-  --red-deep: #330000;
-  --red-dark: #660000;
+  --red-deep: #1a0000;
+  --red-dark: #5c0011;
   --red-primary: #FF0033;
-  --red-light: #FF1A1A;
+  --red-hot: #FF1744;
+  --red-light: #FF4466;
   --red-glow: rgba(255, 0, 51, 0.5);
+  --red-subtle: rgba(255, 0, 51, 0.08);
   
   --text-main: #FFFFFF;
-  --text-muted: #A0A0A0;
+  --text-muted: #888;
+  --text-dim: #555;
   
-  --hud-border: 1px solid var(--red-dark);
-  --hud-border-glow: 0 0 10px var(--red-glow);
+  --hud-border: 1px solid rgba(255, 0, 51, 0.2);
+  --hud-border-glow: 0 0 15px rgba(255, 0, 51, 0.15);
   
   /* Fonts */
   --font-inter: 'Inter', sans-serif;
   --font-orbitron: 'Orbitron', sans-serif;
+  --font-rajdhani: 'Rajdhani', sans-serif;
+
+  /* Spacing */
+  --radius: 8px;
+  --radius-lg: 16px;
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -34,15 +48,15 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   position: relative;
-  cursor: none; /* Use custom glow cursor */
+  cursor: none;
 }
 
-/* Also hide cursor on interactive elements */
+/* Custom cursor on interactive elements */
 a, button, input, textarea, select, [role="button"] {
   cursor: none;
 }
 
-/* Background Effects */
+/* Subtle grid background */
 body::before {
   content: '';
   position: fixed;
@@ -51,13 +65,13 @@ body::before {
   width: 100vw;
   height: 100vh;
   background-image: 
-    linear-gradient(rgba(255, 0, 51, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 0, 51, 0.05) 1px, transparent 1px);
-  background-size: 30px 30px;
+    linear-gradient(rgba(255, 0, 51, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 0, 51, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
   z-index: -2;
 }
 
-/* Scan Lines */
+/* Very subtle scan lines */
 body::after {
   content: '';
   position: fixed;
@@ -65,18 +79,21 @@ body::after {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0),
-    rgba(255, 255, 255, 0) 50%,
-    rgba(0, 0, 0, 0.2) 50%,
-    rgba(0, 0, 0, 0.2)
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(0, 0, 0, 0.08) 3px,
+    rgba(0, 0, 0, 0.08) 6px
   );
-  background-size: 100% 4px;
   z-index: 9999;
   pointer-events: none;
-  opacity: 0.3;
+  opacity: 0.4;
 }
+
+/* ========================
+   TYPOGRAPHY
+   ======================== */
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-orbitron);
@@ -87,11 +104,12 @@ h1, h2, h3, h4, h5, h6 {
 a {
   color: var(--red-primary);
   text-decoration: none;
-  transition: text-shadow 0.3s;
+  transition: all 0.3s;
 }
 
 a:hover {
-  text-shadow: 0 0 8px var(--red-glow);
+  text-shadow: 0 0 12px var(--red-glow);
+  color: var(--red-light);
 }
 
 button {
@@ -99,39 +117,127 @@ button {
   font-family: var(--font-orbitron);
 }
 
-/* Utilities */
+/* ========================
+   LAYOUT
+   ======================== */
+
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 24px;
 }
 
-.glass-panel {
-  background: var(--bg-panel);
-  backdrop-filter: blur(10px);
-  border: var(--hud-border);
-  box-shadow: var(--hud-border-glow);
-  padding: 20px;
-  border-radius: 4px;
-}
+/* ========================
+   GLASS PANEL (used across pages)
+   ======================== */
 
-.btn-primary {
-  background: transparent;
-  color: var(--red-primary);
-  border: 1px solid var(--red-primary);
-  padding: 12px 24px;
-  font-size: 1.1rem;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  transition: all 0.3s ease;
+.glass-panel,
+.panel {
+  background: linear-gradient(145deg, rgba(15, 15, 15, 0.9), rgba(8, 8, 8, 0.95));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 0, 51, 0.15);
+  box-shadow: 
+    0 0 30px rgba(255, 0, 51, 0.08),
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  padding: 40px;
+  border-radius: var(--radius-lg);
   position: relative;
   overflow: hidden;
 }
 
+.glass-panel::before,
+.panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 0, 51, 0.4), transparent);
+}
+
+/* ========================
+   CYBER BUTTON (primary CTA)
+   ======================== */
+
+.cyber-button {
+  background: linear-gradient(135deg, #FF0033, #CC0029);
+  color: #fff;
+  border: none;
+  padding: 16px 40px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  border-radius: var(--radius);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  font-family: var(--font-orbitron);
+  box-shadow: 
+    0 4px 15px rgba(255, 0, 51, 0.3),
+    0 0 30px rgba(255, 0, 51, 0.1);
+}
+
+.cyber-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 8px 30px rgba(255, 0, 51, 0.5),
+    0 0 60px rgba(255, 0, 51, 0.2);
+  background: linear-gradient(135deg, #FF1744, #FF0033);
+}
+
+.cyber-button:active {
+  transform: translateY(0);
+}
+
+.cyber-button:disabled {
+  opacity: 0.5;
+  transform: none;
+  box-shadow: none;
+}
+
+.cyber-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+  transition: left 0.6s;
+}
+
+.cyber-button:hover::before {
+  left: 100%;
+}
+
+/* ========================
+   OUTLINE BUTTON (secondary)
+   ======================== */
+
+.btn-primary {
+  background: transparent;
+  color: var(--red-primary);
+  border: 1px solid rgba(255, 0, 51, 0.4);
+  padding: 14px 32px;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  border-radius: var(--radius);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  font-family: var(--font-orbitron);
+}
+
 .btn-primary:hover {
-  background: var(--red-primary);
-  color: var(--bg-darkest);
-  box-shadow: 0 0 15px var(--red-primary);
+  background: rgba(255, 0, 51, 0.1);
+  border-color: var(--red-primary);
+  box-shadow: 0 0 25px rgba(255, 0, 51, 0.2);
+  color: #fff;
 }
 
 .btn-primary::before {
@@ -141,7 +247,7 @@ button {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
   transition: left 0.5s;
 }
 
@@ -149,32 +255,147 @@ button {
   left: 100%;
 }
 
+/* ========================
+   CYBER INPUT
+   ======================== */
+
+.cyber-input,
 .input-cyber {
   width: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  border: 1px solid var(--red-dark);
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 0, 51, 0.15);
   color: var(--text-main);
-  padding: 12px;
-  font-family: var(--font-inter);
+  padding: 14px 16px;
+  font-family: var(--font-rajdhani);
   font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 1px;
   outline: none;
+  border-radius: var(--radius);
   transition: all 0.3s;
 }
 
+.cyber-input:focus,
 .input-cyber:focus {
   border-color: var(--red-primary);
-  box-shadow: 0 0 8px var(--red-glow);
+  box-shadow: 0 0 20px rgba(255, 0, 51, 0.15), inset 0 0 10px rgba(255, 0, 51, 0.05);
+  background: rgba(0, 0, 0, 0.8);
 }
 
-.text-red {
+.cyber-input::placeholder,
+.input-cyber::placeholder {
+  color: #444;
+  font-family: var(--font-rajdhani);
+}
+
+/* ========================
+   TEXT UTILITIES
+   ======================== */
+
+.text-red,
+.cyber-text-red {
   color: var(--red-primary);
+  text-shadow: 0 0 20px rgba(255, 0, 51, 0.4);
 }
 
 .text-glow {
-  text-shadow: 0 0 10px var(--red-glow);
+  text-shadow: 0 0 15px var(--red-glow);
 }
 
-/* Glitch Animation */
+/* ========================
+   ALERT STYLES
+   ======================== */
+
+.alert {
+  padding: 12px 20px;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  font-family: var(--font-rajdhani);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.alert-error {
+  background: rgba(255, 0, 51, 0.1);
+  border: 1px solid rgba(255, 0, 51, 0.3);
+  color: var(--red-light);
+}
+
+/* ========================
+   GLITCH ANIMATION
+   ======================== */
+
+.glitch-effect {
+  position: relative;
+  animation: glitch-skew 4s infinite linear alternate-reverse;
+}
+
+.glitch-effect::before,
+.glitch-effect::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.glitch-effect::before {
+  color: var(--red-primary);
+  animation: glitch-1 3s infinite linear alternate-reverse;
+  clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+  transform: translate(-3px, -2px);
+  opacity: 0.7;
+}
+
+.glitch-effect::after {
+  color: #00ffff;
+  animation: glitch-2 2s infinite linear alternate-reverse;
+  clip-path: polygon(0 60%, 100% 60%, 100% 100%, 0 100%);
+  transform: translate(3px, 2px);
+  opacity: 0.5;
+}
+
+@keyframes glitch-1 {
+  0% { clip-path: polygon(0 2%, 100% 2%, 100% 5%, 0 5%); }
+  10% { clip-path: polygon(0 15%, 100% 15%, 100% 15%, 0 15%); }
+  20% { clip-path: polygon(0 10%, 100% 10%, 100% 20%, 0 20%); }
+  30% { clip-path: polygon(0 1%, 100% 1%, 100% 2%, 0 2%); }
+  40% { clip-path: polygon(0 33%, 100% 33%, 100% 33%, 0 33%); }
+  50% { clip-path: polygon(0 44%, 100% 44%, 100% 44%, 0 44%); }
+  60% { clip-path: polygon(0 50%, 100% 50%, 100% 20%, 0 20%); }
+  70% { clip-path: polygon(0 70%, 100% 70%, 100% 70%, 0 70%); }
+  80% { clip-path: polygon(0 80%, 100% 80%, 100% 80%, 0 80%); }
+  90% { clip-path: polygon(0 50%, 100% 50%, 100% 55%, 0 55%); }
+  100% { clip-path: polygon(0 70%, 100% 70%, 100% 80%, 0 80%); }
+}
+
+@keyframes glitch-2 {
+  0% { clip-path: polygon(0 25%, 100% 25%, 100% 30%, 0 30%); }
+  15% { clip-path: polygon(0 3%, 100% 3%, 100% 3%, 0 3%); }
+  22% { clip-path: polygon(0 5%, 100% 5%, 100% 20%, 0 20%); }
+  31% { clip-path: polygon(0 20%, 100% 20%, 100% 20%, 0 20%); }
+  45% { clip-path: polygon(0 40%, 100% 40%, 100% 40%, 0 40%); }
+  51% { clip-path: polygon(0 52%, 100% 52%, 100% 52%, 0 52%); }
+  63% { clip-path: polygon(0 60%, 100% 60%, 100% 70%, 0 70%); }
+  75% { clip-path: polygon(0 75%, 100% 75%, 100% 75%, 0 75%); }
+  88% { clip-path: polygon(0 90%, 100% 90%, 100% 90%, 0 90%); }
+  100% { clip-path: polygon(0 60%, 100% 60%, 100% 70%, 0 70%); }
+}
+
+@keyframes glitch-skew {
+  0% { transform: skew(0deg); }
+  20% { transform: skew(0deg); }
+  21% { transform: skew(-0.5deg); }
+  22% { transform: skew(0deg); }
+  50% { transform: skew(0deg); }
+  51% { transform: skew(0.3deg); }
+  52% { transform: skew(0deg); }
+  100% { transform: skew(0deg); }
+}
+
+/* Glitch class (for compatibility) */
 .glitch {
   position: relative;
 }
@@ -185,17 +406,16 @@ button {
   left: 0;
   width: 100%;
   height: 100%;
-  background: var(--bg-darkest);
 }
 .glitch::before {
   left: 2px;
-  text-shadow: -1px 0 red;
+  text-shadow: -1px 0 var(--red-primary);
   clip: rect(24px, 550px, 90px, 0);
   animation: glitch-anim 2s infinite linear alternate-reverse;
 }
 .glitch::after {
   left: -2px;
-  text-shadow: -1px 0 blue;
+  text-shadow: -1px 0 #0ff;
   clip: rect(85px, 550px, 140px, 0);
   animation: glitch-anim 2s infinite linear alternate-reverse;
 }
@@ -209,39 +429,119 @@ button {
   100% { clip: rect(54px, 9999px, 20px, 0); }
 }
 
-/* Scrollbar */
+/* ========================
+   ADMIN GHOST BUTTON
+   ======================== */
+
+.admin-ghost-btn {
+  padding: 16px 40px;
+  font-size: 0.95rem;
+  letter-spacing: 3px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #777;
+  cursor: pointer;
+  font-family: var(--font-orbitron);
+  border-radius: var(--radius);
+  transition: all 0.3s ease;
+}
+
+.admin-ghost-btn:hover {
+  border-color: rgba(255, 0, 51, 0.4);
+  color: var(--red-light);
+  background: rgba(255, 0, 51, 0.05);
+  box-shadow: 0 0 20px rgba(255, 0, 51, 0.1);
+}
+
+/* ========================
+   PULSE & ANIMATIONS
+   ======================== */
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 8px #FF0033; }
+  50% { opacity: 0.3; box-shadow: 0 0 2px #FF0033; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes typewriter {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes borderGlow {
+  0%, 100% { border-color: rgba(255, 0, 51, 0.15); }
+  50% { border-color: rgba(255, 0, 51, 0.4); }
+}
+
+@keyframes redPulse {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(255, 0, 51, 0.1); 
+  }
+  50% { 
+    box-shadow: 0 0 40px rgba(255, 0, 51, 0.25); 
+  }
+}
+
+/* ========================
+   SCROLLBAR
+   ======================== */
+
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 ::-webkit-scrollbar-track {
   background: var(--bg-darkest);
 }
 ::-webkit-scrollbar-thumb {
   background: var(--red-dark);
+  border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--red-primary);
 }
 
-/* Admin ghost button (home page) */
-.admin-ghost-btn {
-  padding: 16px 48px;
-  font-size: 1.05rem;
-  letter-spacing: 3px;
-  background: transparent;
-  border: 1px solid #444;
-  color: #666;
-  cursor: pointer;
-  font-family: var(--font-orbitron);
-  transition: border-color 0.3s, color 0.3s;
-}
-.admin-ghost-btn:hover {
-  border-color: #888;
-  color: #aaa;
+/* ========================
+   RESPONSIVE HELPERS
+   ======================== */
+
+@media (max-width: 768px) {
+  .glass-panel, .panel {
+    padding: 24px 20px;
+    border-radius: var(--radius);
+  }
 }
 
-/* Pulse keyframe for live dot */
-@keyframes pulse {
-  0%, 100% { opacity: 1; box-shadow: 0 0 8px #FF0033; }
-  50%       { opacity: 0.4; box-shadow: 0 0 2px #FF0033; }
+/* ========================
+   SELECTION COLOR
+   ======================== */
+
+::selection {
+  background: rgba(255, 0, 51, 0.3);
+  color: #fff;
 }
